@@ -54,6 +54,37 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+import os
+
+# Static files (CSS, JavaScript, images)
+STATIC_URL = '/static/'  # URL to access static files
+
+# Static files directory (where Django will look for additional static files)
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  
+
+# Directory where collected static files will be stored (for production)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media files (User uploads)
+MEDIA_URL = '/media/'  # URL to access media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded media
+
+
+
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',  # Session-based auth
+        'rest_framework.authentication.BasicAuthentication',  # Basic auth
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Change this later for security
+    ],
+}
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow React frontend
 ]
