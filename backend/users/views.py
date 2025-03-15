@@ -4,6 +4,14 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from .serializers import UserSerializer, LoginSerializer
 from django.contrib.auth.models import User
+###################################################################################################
+from rest_framework.generics import CreateAPIView
+from .serializers import UserSerializer
+
+class RegisterView(CreateAPIView):
+    serializer_class = UserSerializer
+
+###################################################################################################
 
 class RegisterUserView(views.APIView):
     permission_classes = [AllowAny]
