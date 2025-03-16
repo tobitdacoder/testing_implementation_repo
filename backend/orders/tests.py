@@ -36,6 +36,19 @@ def test_create_order_missing_fields():
     assert "This field is required." in str(response.data)
     
     
+    
+@pytest.mark.django_db
+def test_create_order_invalid_quantity():
+    client = APIClient()
+    url = reverse("order-create")
+    data = {"product_name": "Tablet", "quantity": "not_a_number"}  # Invalid quantity type
+    response = client.post(url, data, format="json")
+
+    assert response.status_code == 400  # Expecting "Bad Request"
+    assert "A valid integer is required" in str(response.data)
+
+    
+    
 @pytest.mark.django_db
 def test_get_nonexistent_order():
     client = APIClient()
@@ -44,6 +57,18 @@ def test_get_nonexistent_order():
 
     assert response.status_code == 404  # Expecting "Not Found"
     assert response.data["detail"] == "Not found."
+
+
+
+@pytest.mark.django_db
+def test_get_all_orders_empty():
+    client = APIClient()
+    url = reverse("order-list")  # Assuming this is your orders list endpoint
+    response = client.get(url)
+
+    assert response.status_code == 200  # Expecting "OK"
+    assert len(response.data) == 0  # No orders should be returned
+
 
 
 from unittest.mock import patch
@@ -55,6 +80,21 @@ def test_internal_server_error(mock_create):
     client = APIClient()
     url = reverse("order-create")
     data = {"id": 1, "product": "Laptop", "quantity": 2}
+
+    response = client.post(url, data, format="json")
+
+    assert response.status_code == 500  # Expecting "Internal Server Error"
+    assert "Something went wrong" in response.data["error"]
+
+
+
+@pytest.mark.django_db
+@patch("orders.views.Order.objects.create")
+def test_internal_server_error(mock_create):
+    mock_create.side_effect = Exception("Database Error")  # Simulate failure
+    client = APIClient()
+    url = reverse("order-create")
+    data = {"id": 1, "product_name": "Laptop", "quantity": 2}
 
     response = client.post(url, data, format="json")
 
