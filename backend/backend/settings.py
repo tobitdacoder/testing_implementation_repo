@@ -71,6 +71,8 @@ MEDIA_URL = '/media/'  # URL to access media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded media
 
 
+# Configure Pytest to work with Django
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
 
 

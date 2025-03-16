@@ -1,71 +1,56 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState } from "react";
 
 const OrderForm = ({ onOrderSubmitted }) => {
-  const [order, setOrder] = useState({ id: "", product: "", quantity: "" });
+  const [orderId, setOrderId] = useState("");
+  const [productName, setProductName] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setOrder({ ...order, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!order.id || !order.product || !order.quantity) {
+    if (!orderId || !productName || !quantity) {
       setError("All fields are required");
       return;
     }
-
-    try {
-      const response = await fetch("http://localhost:5000/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(order),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create order");
-      }
-
-      const data = await response.json();
-      onOrderSubmitted(data.order);
-      setOrder({ id: "", product: "", quantity: "" });
-      setError("");
-    } catch (error) {
-      setError(error.message);
-    }
+    setError("");
+    onOrderSubmitted({ orderId, productName, quantity });
   };
 
   return (
-    <div>
-      <h2>Create Order</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="orderId">Order ID</label>
         <input
-          type="text"
-          name="id"
+          id="orderId"
           placeholder="Order ID"
-          value={order.id}
-          onChange={handleChange}
-        />
-        <input
           type="text"
-          name="product"
-          placeholder="Product Name"
-          value={order.product}
-          onChange={handleChange}
+          value={orderId}
+          onChange={(e) => setOrderId(e.target.value)}
         />
+      </div>
+      <div>
+        <label htmlFor="productName">Product Name</label>
         <input
-          type="number"
-          name="quantity"
-          placeholder="Quantity"
-          value={order.quantity}
-          onChange={handleChange}
+          id="productName"
+          placeholder="Product Name"
+          type="text"
+          value={productName}
+          onChange={(e) => setProductName(e.target.value)}
         />
-        <button type="submit">Submit Order</button>
-      </form>
-    </div>
+      </div>
+      <div>
+        <label htmlFor="quantity">Quantity</label>
+        <input
+          id="quantity"
+          placeholder="Quantity"
+          type="number"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+        />
+      </div>
+      {error && <div className="error">{error}</div>}
+      <button type="submit">Submit Order</button>
+    </form>
   );
 };
 

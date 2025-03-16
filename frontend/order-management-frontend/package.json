@@ -35,6 +35,10 @@
     "vite": "^6.2.0"
   },
   "jest": {
+    "testMatch": [
+      "**/tests/**/*.[jt]s?(x)",
+      "**/?(*.)+(spec|test).[tj]s?(x)"
+    ],
     "setupFilesAfterEnv": ["<rootDir>/setupTests.js"],
     "testEnvironment": "jsdom",
     "transform": {
